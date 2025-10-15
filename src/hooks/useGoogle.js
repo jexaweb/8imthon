@@ -1,53 +1,41 @@
 import { useState } from "react";
+import { auth } from "../firebase/config";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth, db } from "../firebase/config";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { login } from "../app/features/userSlice";
 import { getFirebaseErrorMessage } from "../components/Errorld";
+import { db } from "../firebase/config";
+import { doc, setDoc } from "firebase/firestore";
 
-export function useGoogle() {
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
+export const useGoogle = () => {
   const dispatch = useDispatch();
 
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
   const googleProvider = async () => {
-    setIsPending(true);
-    setError(null);
     const provider = new GoogleAuthProvider();
-
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      const userRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(userRef);
-
-      if (!docSnap.exists()) {
-        // 🔹 yangi foydalanuvchi yaratish
-        await setDoc(userRef, {
-          uid: user.uid,
-          displayName: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL || "",
-          online: true,
-          createdAt: new Date(),
-        });
-      } else {
-        // 🔹 mavjud foydalanuvchini online qilish
-        await updateDoc(userRef, {
-          online: true,
-        });
+      setIsPending(true);
+      const req = await signInWithPopup(auth, provider);
+      if (!req.user) {
+        throw new Error("Regestration failed)");
       }
 
-      dispatch(login(user));
-    } catch (err) {
-      console.error("Google login error:", err.message);
-      setError(getFirebaseErrorMessage(err.message));
+      await setDoc(doc(db, "users", req.user.uid), {
+        displayName: req.user.displayName,
+        photoURL: req.user.photoURL,
+        online: true,
+        uid: req.user.uid,
+      });
+      dispatch(login(req.user));
+
+      console.log(req.user);
+    } catch (error) {
+      setError(getFirebaseErrorMessage(error.message));
+      console.log(error.message);
     } finally {
       setIsPending(false);
     }
   };
-
   return { googleProvider, isPending, error };
-}
+};

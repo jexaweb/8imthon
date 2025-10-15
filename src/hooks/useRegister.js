@@ -4,15 +4,13 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { login } from "../app/features/userSlice";
 import { getFirebaseErrorMessage } from "../components/Errorld";
-import { db } from "../firebase/config";
-import { doc, setDoc } from "firebase/firestore";
 
 export const useRegister = () => {
   const dispatch = useDispatch();
 
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
-  const register = async (name, photoURL, email, password) => {
+  const register = async (name, url, email, password) => {
     try {
       setIsPending(true);
       const req = await createUserWithEmailAndPassword(auth, email, password);
@@ -21,15 +19,7 @@ export const useRegister = () => {
       }
       await updateProfile(req.user, {
         displayName: name,
-        photoURL: photoURL,
-      });
-
-      // Add a new document in collection "cities"
-      await setDoc(doc(db, "users", req.user.uid), {
-        displayName: req.user.displayName,
-        photoURL: req.user.photoURL,
-        online: true,
-        uid: req.user.uid,
+        photoURL: url,
       });
       dispatch(login(req.user));
 

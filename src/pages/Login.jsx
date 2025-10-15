@@ -1,16 +1,46 @@
-import { Form, Link, useActionData, useNavigate } from "react-router-dom";
+import { Form, Link, useActionData } from "react-router-dom";
 import { FormInput } from "../components/FormInput";
+import { useLogin } from "../hooks/useLogin";
+import { useEffect, useState } from "react";
+import { formError } from "../components/Errorld";
+import { useGoogle } from "../hooks/useGoogle";
 
 export async function action({ request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-
   return data;
 }
 
 function Login() {
-  const data = useActionData();
-  console.log(data);
+  const {
+    googleProvider,
+    isPending: isPendingGoogle,
+    error: errorGoogle,
+  } = useGoogle();
+  const { _login, error: _error, isPending } = useLogin();
+  const user = useActionData();
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (user?.email && user?.password) {
+      _login(user.email, user.password);
+      setError(false);
+    } else {
+      setError(user ? formError(user) : false);
+    }
+  }, [user]);
+  useEffect(() => {
+    if (error) {
+      alert(error);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (_error) {
+      alert(_error);
+    }
+  }, [_error]);
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-white px-4 sm:px-6">
       <Form
@@ -45,29 +75,49 @@ function Login() {
           </div>
         </div>
 
-        {/* Login button */}
-        <button
-          type="submit"
-          className="mt-6 w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition"
-        ></button>
+        {!isPending ? (
+          <button className="mt-6 w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition">
+            Login
+          </button>
+        ) : (
+          <button
+            disabled
+            className="mt-6 w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold py-2 rounded-lg opacity-80"
+          >
+            Loading...
+          </button>
+        )}
 
-        {/* Google login */}
-        <button
-          type="button"
-          className="mt-3 w-full bg-gray-800 text-white font-semibold py-2 rounded-lg hover:bg-gray-700 transition"
-        >
-          Google
-        </button>
+        {!isPendingGoogle && (
+          <button
+            onClick={googleProvider}
+            type="button"
+            className="mt-3 w-full bg-gray-800 text-white font-semibold py-2 rounded-lg hover:bg-gray-700 transition"
+          >
+            Google
+          </button>
+        )}
+        {isPendingGoogle && (
+          <button
+            disabled
+            type="button"
+            className="mt-3 w-full bg-gray-800 text-white font-semibold py-2 rounded-lg hover:bg-gray-700 transition"
+          >
+            Loading...
+          </button>
+        )}
 
-        {/* Link to register */}
         <Link
           to="/register"
           className="block mt-4 w-full text-center bg-pink-500 text-white font-medium py-2 rounded-lg hover:bg-pink-600 transition"
         >
           Create new account
         </Link>
+        <div>{error && <p style={{ color: "red" }}>{error}</p>}</div>
+        <div>{_error && <p style={{ color: "red" }}>{_error}</p>}</div>
       </Form>
     </div>
   );
 }
+
 export default Login;

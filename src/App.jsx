@@ -1,21 +1,25 @@
-import { useEffect, useMemo } from "react";
 import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import Mainlayouts from "./layouts/Mainlayouts";
-import Home from "./pages/Home";
-
+//components
 import ProtectedRoutes from "./components/ProtectedRoutes";
-
-import { useSelector } from "react-redux";
 import Register, { action as RegisterAction } from "./pages/Register";
 import Login, { action as LoginAction } from "./pages/Login";
+//pages
+import Home from "./pages/Home";
+import Mainlayouts from "./layouts/Mainlayouts";
+import { isAuthReady, login } from "./app/features/userSlice";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
+import { auth } from "./firebase/config";
 
 function App() {
-  const { user } = useSelector((store) => store.user);
+  const dispatch = useDispatch();
+  const { user, authReady } = useSelector((store) => store.user);
   const routes = createBrowserRouter([
     {
       path: "/",
@@ -29,10 +33,6 @@ function App() {
           index: true,
           element: <Home />,
         },
-        // 🔹 Keyinchalik qo‘shish uchun:
-        // { path: "createtask", element: <CreateTask /> },
-        // { path: "task/:id", element: <Task /> },
-        // { path: "profile", element: <Profile /> },
       ],
     },
     {
@@ -46,8 +46,24 @@ function App() {
       action: RegisterAction,
     },
   ]);
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(
+          login({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          })
+        );
+      }
+      // Foydalanuvchi bo'lsa ham, bo'lmasa ham auth tayyor bo'ldi
+      dispatch(isAuthReady());
+    });
+  }, [dispatch]);
 
-  return <RouterProvider router={routes} />;
+  return <>{authReady && <RouterProvider router={routes} />}</>;
 }
 
 export default App;

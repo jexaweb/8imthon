@@ -9,12 +9,11 @@ export const formError = (data) => {
 export function getFirebaseErrorMessage(error) {
   if (!error) return "An unknown error occurred.";
 
-  // Example: "Firebase: Error (auth/email-already-in-use)."
   const match = error.match(/\(auth\/[^\)]+\)/);
 
   if (!match) return "Something went wrong. Please try again.";
 
-  const code = match[0].replace(/[()]/g, ""); // → "auth/email-already-in-use"
+  const code = match[0].replace(/[()]/g, "");
 
   switch (code) {
     case "auth/email-already-in-use":

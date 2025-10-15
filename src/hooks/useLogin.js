@@ -1,37 +1,30 @@
 import { useState } from "react";
+import { auth } from "../firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase/config";
 import { useDispatch } from "react-redux";
 import { login } from "../app/features/userSlice";
-import { doc, updateDoc } from "firebase/firestore";
 import { getFirebaseErrorMessage } from "../components/Errorld";
 
-export function useLogin() {
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
+export const useLogin = () => {
   const dispatch = useDispatch();
 
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
   const _login = async (email, password) => {
-    setIsPending(true);
-    setError(null);
-
     try {
-      const res = await signInWithEmailAndPassword(auth, email, password);
+      setIsPending(true);
+      const req = await signInWithEmailAndPassword(auth, email, password);
+      if (!req.user) {
+        throw new Error("Regestration failed)");
+      }
 
-      // online holatni true qilamiz
-      const userRef = doc(db, "users", res.user.uid);
-      await updateDoc(userRef, {
-        online: true,
-      });
-
-      dispatch(login(res.user));
-    } catch (err) {
-      console.error("Login error:", err.message);
-      setError(getFirebaseErrorMessage(err.message));
+      dispatch(login(req.user));
+    } catch (error) {
+      setError(getFirebaseErrorMessage(error.message));
+      console.log(error.message);
     } finally {
       setIsPending(false);
     }
   };
-
   return { _login, isPending, error };
-}
+};
