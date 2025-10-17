@@ -16,6 +16,8 @@ import { isAuthReady, login } from "./app/features/userSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import { auth } from "./firebase/config";
+import CreateRecipe from "./pages/CreateRecipe";
+import Recipes from "./pages/Recipes";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,6 +34,14 @@ function App() {
         {
           index: true,
           element: <Home />,
+        },
+        {
+          path: "/createrecipe",
+          element: <CreateRecipe />,
+        },
+        {
+          path: "recipes",
+          element: <Recipes />,
         },
       ],
     },
@@ -58,7 +68,7 @@ function App() {
           })
         );
       }
-      // Foydalanuvchi bo'lsa ham, bo'lmasa ham auth tayyor bo'ldi
+
       dispatch(isAuthReady());
     });
   }, [dispatch]);
