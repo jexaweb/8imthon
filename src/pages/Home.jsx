@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useLogout } from "../hooks/useLogout";
 import { Link } from "react-router-dom";
+import Themes from "../components/Themes";
 
 function Home() {
   const { _logout, error, isPending } = useLogout();
@@ -10,13 +11,10 @@ function Home() {
     url && (url.startsWith("http") || url.startsWith("data:image/"));
 
   return (
-    <div className="flex justify-between items-center p-4 sm:px-8 bg-white shadow-md rounded-lg mt-5">
-      {/* Chap tomondagi sarlavha */}
+    <div className="flex justify-between items-center  p-4 sm:px-8 shadow-md rounded-lg mt-5">
       <div className="flex items-center space-x-2">
         <h1 className="text-xl sm:text-2xl font-bold ">Kitchen App</h1>
       </div>
-
-      {/* O'ng tomonda foydalanuvchi bloki */}
 
       <div className="relative group hoverid">
         <div className="flex items-center space-x-2 cursor-pointer">
@@ -31,7 +29,6 @@ function Home() {
           />
         </div>
 
-        {/* Hoverda chiqadigan menyu */}
         <div
           className="absolute right-0 top-12 bg-white shadow-lg rounded-xl p-3 w-40 
                      opacity-0 invisible group-hover:opacity-100 group-hover:visible 
@@ -44,9 +41,10 @@ function Home() {
             <li className="hover:bg-gray-100 rounded-md px-3 py-2 text-gray-700 font-medium text-sm cursor-pointer transition">
               <Link> Create recipe</Link>
             </li>
-            <li className="hover:bg-gray-100 rounded-md px-3 py-2 text-gray-700 font-medium text-sm cursor-pointer transition">
-              <Link to={"/themes"}> Change theme</Link>
+            <li>
+              <Themes />
             </li>
+
             <li>
               <button
                 onClick={_logout}
