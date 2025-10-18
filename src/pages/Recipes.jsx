@@ -46,12 +46,12 @@ function Recipes() {
                     {task.cookingTime || "N/A"}
                   </p>
                   {task.ingredients && task.ingredients.length > 0 && (
-                    <div className="mt-3  flex gap-1.5   ">
+                    <div className="mt-3  flex gap-1.5    ">
                       <span className="text-3xl">ingredients:</span>
-                      {task.ingredients.slice(0, 3).map((ing, i) => (
+                      {task.ingredients.slice(0, 10).map((ing, i) => (
                         <span
                           key={`${task.id || index}-ing-${i}`}
-                          className="block bg-gray-600  w-7 h-7 mt-2 rounded text-white"
+                          className="block bg-gray-600  items-center w-13   h-7 mt-2 rounded text-white"
                         >
                           {ing}
                         </span>
