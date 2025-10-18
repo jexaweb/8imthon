@@ -45,9 +45,9 @@ function Login() {
     <div className="flex justify-center items-center min-h-screen bg-white px-4 sm:px-6">
       <Form
         method="post"
-        className="w-full max-w-sm bg-white p-6 sm:p-8 rounded-xl shadow-md border border-purple-200"
+        className="w-full max-w-sm bg-gray-600 p-6 sm:p-8 rounded-xl shadow-md border border-purple-200"
       >
-        <h2 className="text-2xl sm:text-3xl font-semibold text-center text-gray-800 mb-6">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center  mb-6">
           Login
         </h2>
 

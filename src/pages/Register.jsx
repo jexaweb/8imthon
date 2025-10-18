@@ -44,14 +44,14 @@ function Register() {
     <div className="flex justify-center items-center min-h-screen bg-white">
       <Form
         method="post"
-        className="w-full max-w-sm bg-white p-8 rounded-xl shadow-md border border-purple-200"
+        className="w-full max-w-sm bg-gray-600 p-8 rounded-xl shadow-md border border-purple-200"
       >
-        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-          Signup
-        </h2>
+        <h2 className="text-2xl font-semibold text-center  mb-6">Signup</h2>
         <div className="flex flex-col gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1">User name:</label>
+            <label className="block text-sm font-medium mb-1 ">
+              User name:
+            </label>
             <FormInput type="text" name="name" placeholder="Name" required />
           </div>
           <div>

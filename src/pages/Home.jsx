@@ -29,7 +29,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm: mt-20">
+      <div className="max-w-7xl mx-auto px-4 mt-22">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Recipes</h1>
         </div>

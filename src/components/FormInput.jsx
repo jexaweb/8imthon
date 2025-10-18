@@ -10,10 +10,10 @@ export const FormInput = ({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <label className="text-sm font-medium text-gray-700 ">{label}</label>
       )}
       <div className="relative">
-        {Icon && <Icon className="absolute left-3 top-3 text-gray-400" />}
+        {Icon && <Icon className="absolute left-3 top-3 text-gray-400 " />}
         <input
           type={type}
           name={name}
